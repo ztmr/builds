@@ -1,4 +1,4 @@
-(function(window, undefined) {
+module.exports = (function(window, undefined) {
 
 function define(name, payload) {
   define.modules[name] = payload;
@@ -180,7 +180,9 @@ define('l20n/html', function(require) {
       return collectNodes();
     }
 
-    console.error('L20n: No resources found. (Put them above l20n.js.)');
+    // XXX: when used as CommonJS module, we usually don't want to scan
+    // document's head automatically
+    //console.error('L20n: No resources found. (Put them above l20n.js.)');
   }
 
   function loadManifest(url) {
@@ -3944,11 +3946,17 @@ define('l20n/intl', function(require, exports, module) {
   };
 
 });
+
+var L20nSingleton = require ('l20n');
+
 // attach the L20n singleton to the global object
-window.L20n = require('l20n');
+window.L20n = L20nSingleton;
 
 // hook up the HTML bindings
 require('l20n/html');
 
+return L20nSingleton;
+
 // close the function defined in build/prefix/microrequire.js
 })(window);
+
